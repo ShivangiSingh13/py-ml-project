@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Loss Functions Visualization</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Loss Functions Visualization</h1>
+            <p>Interactive visualization of different loss functions using the California Housing dataset</p>
+        </header>
+
+        <section class="interactive-section">
+            <h2>Interactive Loss Functions</h2>
+            <div class="controls">
+                <div class="control-group">
+                    <label for="mseScale">MSE Scale:</label>
+                    <input type="range" id="mseScale" min="0.1" max="2" step="0.1" value="1.0">
+                    <span id="mseScale-value">1.0</span>
+                </div>
+                <div class="control-group">
+                    <label for="maeScale">MAE Scale:</label>
+                    <input type="range" id="maeScale" min="0.1" max="2" step="0.1" value="1.0">
+                    <span id="maeScale-value">1.0</span>
+                </div>
+                <div class="control-group">
+                    <label for="logCoshScale">Log-Cosh Scale:</label>
+                    <input type="range" id="logCoshScale" min="0.1" max="2" step="0.1" value="1.0">
+                    <span id="logCoshScale-value">1.0</span>
+                </div>
+                <div class="control-group">
+                    <label for="delta">Huber Loss Delta:</label>
+                    <input type="range" id="delta" min="0.1" max="2" step="0.1" value="1.0">
+                    <span id="delta-value">1.0</span>
+                </div>
+                <div class="control-group">
+                    <label for="q">Quantile Loss q:</label>
+                    <input type="range" id="q" min="0.1" max="0.9" step="0.1" value="0.5">
+                    <span id="q-value">0.5</span>
+                </div>
+                <div class="control-group">
+                    <label for="beta">Smooth L1 Beta:</label>
+                    <input type="range" id="beta" min="0.1" max="2" step="0.1" value="1.0">
+                    <span id="beta-value">1.0</span>
+                </div>
+                <div class="checkbox-group">
+                    <label><input type="checkbox" id="showMSE" checked> MSE</label>
+                    <label><input type="checkbox" id="showMAE" checked> MAE</label>
+                    <label><input type="checkbox" id="showHuber" checked> Huber</label>
+                    <label><input type="checkbox" id="showLogCosh" checked> Log-Cosh</label>
+                    <label><input type="checkbox" id="showQuantile" checked> Quantile</label>
+                    <label><input type="checkbox" id="showSmoothL1" checked> Smooth L1</label>
+                </div>
+            </div>
+            <div class="plot-container">
+                <div id="lossPlot"></div>
+            </div>
+        </section>
+
+        <section class="training-history-section">
+            <h2>Training History</h2>
+            <div class="grid-container">
+                <div class="plot-container">
+                    <h3>Training Loss</h3>
+                    <div id="training-loss-plot"></div>
+                </div>
+                <div class="plot-container">
+                    <h3>Test MSE</h3>
+                    <div id="test-mse-plot"></div>
+                </div>
+                <div class="plot-container">
+                    <h3>Test MAE</h3>
+                    <div id="test-mae-plot"></div>
+                </div>
+                <div class="plot-container">
+                    <h3>Test R² Score</h3>
+                    <div id="test-r2-plot"></div>
+                </div>
+            </div>
+        </section>
+
+        <section class="model-info-section">
+            <div id="model-info"></div>
+        </section>
+
+        <section class="regression-section">
+            <h2>Regression Analysis</h2>
+            <div class="plot-container">
+                <div id="regression-plot"></div>
+            </div>
+            <div class="metrics-container">
+                <div class="metric-group">
+                    <h3>Loss Metrics</h3>
+                    <div class="metric">
+                        <span class="metric-label">MSE Loss:</span>
+                        <span id="mse-loss" class="metric-value">-</span>
+                    </div>
+                    <div class="metric">
+                        <span class="metric-label">MAE Loss:</span>
+                        <span id="mae-loss" class="metric-value">-</span>
+                    </div>
+                    <div class="metric">
+                        <span class="metric-label">Huber Loss:</span>
+                        <span id="huber-loss" class="metric-value">-</span>
+                    </div>
+                </div>
+                <div class="metric-group">
+                    <h3>R² Scores</h3>
+                    <div class="metric">
+                        <span class="metric-label">MSE R²:</span>
+                        <span id="r2-mse" class="metric-value">-</span>
+                    </div>
+                    <div class="metric">
+                        <span class="metric-label">MAE R²:</span>
+                        <span id="r2-mae" class="metric-value">-</span>
+                    </div>
+                    <div class="metric">
+                        <span class="metric-label">Huber R²:</span>
+                        <span id="r2-huber" class="metric-value">-</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="classification-section">
+            <h2>Classification Analysis</h2>
+            <div class="plot-container">
+                <div id="classification-plot"></div>
+            </div>
+            <div class="metrics-container">
+                <div class="metric-group">
+                    <h3>Classification Metrics</h3>
+                    <div class="metric">
+                        <span class="metric-label">Binary Cross-Entropy Loss:</span>
+                        <span id="bce-loss" class="metric-value">-</span>
+                    </div>
+                    <div class="metric">
+                        <span class="metric-label">Accuracy:</span>
+                        <span id="classification-accuracy" class="metric-value">-</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="noise-section">
+            <h2>Noise Comparison</h2>
+            <div class="plot-container">
+                <div id="noise-comparison-plot"></div>
+            </div>
+        </section>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/visualizations.js') }}"></script>
+</body>
+</html> 
